@@ -1,4 +1,4 @@
-# Part (a): Lexical Specification
+
 
 The scanner groups characters of a UPL program into lexemes and classifies each into a token category. Each reserved word gets its own token because the grammar refers to them individually (e.g. `BOIL`, `WATER`). Whitespace and comments are discarded and never reach the parser.
 
