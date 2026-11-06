@@ -1,6 +1,6 @@
 # UPL Lexer (Ugali Preparation Language): JFlex Scanner
 
-A lexical analyzer for the Ugali Preparation Language, built with JFlex and Java. These instructions are for Windows.
+A lexical analyzer for the Ugali Preparation Language, built with JFlex and Java. Build instructions are provided for Linux and Windows.
 
 ## Project structure
 
@@ -18,9 +18,54 @@ project/
         └── TokenType.java
 ```
 
-## 1. Prerequisites
+## Linux instructions
 
-### Java JDK (version 17 or newer)
+Run all commands from the project root (the folder containing `lexer/`).
+
+### Install Java and JFlex
+
+On Ubuntu or Debian, install a JDK and JFlex with:
+
+```
+sudo apt update
+sudo apt install default-jdk jflex
+```
+
+Other Linux distributions provide these packages through their package managers. Install a Java JDK version 17 or newer and JFlex, then verify Java is available:
+
+```
+java -version
+javac -version
+jflex --version
+```
+
+### Generate, compile, and run
+
+Generate the scanner from the JFlex specification:
+
+```
+jflex lexer/UgaliLexer.flex
+```
+
+Compile the Java sources:
+
+```
+javac lexer/tokens/*.java lexer/*.java
+```
+
+Run the scanner:
+
+```
+java lexer.Main lexer/sample.upl
+```
+
+Re-run the generation and compile steps whenever `lexer/UgaliLexer.flex` changes.
+
+## Windows instructions
+
+### 1. Prerequisites
+
+#### Java JDK (version 17 or newer)
 
 Check if it is installed. Open a terminal and run:
 
@@ -48,17 +93,17 @@ After installing, **close and reopen your terminal and VS Code.**
 
 Always use **New** to add a line. Never replace the existing text.
 
-### JFlex (version 1.9.1)
+#### JFlex (version 1.9.1)
 
 1. Download the zip from https://jflex.de.
 2. Unzip it somewhere simple, for example `C:\Users\<you>\jflex-1.9.1`.
 3. You do **not** need to add JFlex to PATH. Call it by its full path (see below).
 
-### VS Code (optional)
+#### VS Code (optional)
 
 Install the **Extension Pack for Java** (Microsoft) for editing. The build works from any terminal.
 
-## 2. Build and run
+### 2. Build and run
 
 Run all commands **from the project root** (the folder that contains `lexer/`), not from inside `lexer/`. In VS Code, open the project folder and use the built-in terminal (`` Ctrl+` ``), which starts in the right place.
 
@@ -97,7 +142,7 @@ Use `lexer.Main` (the package name), not `Main`.
 
 **Re-run Steps 1 to 3 every time you change `UgaliLexer.flex`.**
 
-## 3. Expected output
+### 3. Expected output
 
 For an input file containing `boil 4 cups water;`:
 
@@ -121,7 +166,7 @@ To see errors and tokens in order in one stream:
 java lexer.Main lexer/bad.upl 2>&1
 ```
 
-## 4. Troubleshooting
+### 4. Troubleshooting
 
 | Problem | Fix |
 |---|---|
@@ -137,7 +182,7 @@ java lexer.Main lexer/bad.upl 2>&1
 | `Could not find or load main class` | Run from the project root and use `java lexer.Main`. |
 | Everything is printed as `ID` | Keyword rules must come before the `{ID}` rule in the `.flex` file. |
 
-## 5. Team notes
+### 5. Team notes
 
 - Edit `UgaliLexer.flex`, not `UgaliLexer.java`. The `.java` file is regenerated and manual edits would be lost.
 - If using Git, add this to `.gitignore` so generated files stay out of commits:

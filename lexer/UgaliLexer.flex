@@ -17,6 +17,7 @@ import lexer.tokens.TokenType;
 %column                /* enables yycolumn (0-based) */
 %type Token            /* nextToken() returns our own Token objects */
 %function nextToken
+%xstate MULTILINE_COMMENT
 
 %{
     /* Helpers: build a Token with 1-based line and column */
@@ -30,6 +31,12 @@ import lexer.tokens.TokenType;
         System.err.println("Lexical error at line " + (yyline + 1)
             + ", column " + (yycolumn + 1) + ": " + msg);
     }
+    private void lexErrorAt(String msg, int line, int column) {
+        System.err.println("Lexical error at line " + line
+            + ", column " + column + ": " + msg);
+    }
+    private int commentStartLine;
+    private int commentStartColumn;
 %}
 
 /* What to return when the input ends */
@@ -84,6 +91,22 @@ COMMENT  = "//"[^\r\n]*
 /* 5. Skipped: no return, so scanning simply continues */
 {WS}           { /* ignore */ }
 {COMMENT}      { /* ignore */ }
+"/*"           { commentStartLine = yyline + 1;
+                 commentStartColumn = yycolumn + 1;
+                 yybegin(MULTILINE_COMMENT);
+               }
+
+/* Consume all comment contents, stopping only at the closing delimiter. */
+<MULTILINE_COMMENT> "*/"  { yybegin(YYINITIAL); }
+<MULTILINE_COMMENT> [^*]+ { /* ignore */ }
+<MULTILINE_COMMENT> "*"  { /* ignore */ }
+<MULTILINE_COMMENT> <<EOF>> {
+                 lexErrorAt("unterminated multiline comment",
+                     commentStartLine, commentStartColumn);
+                 yybegin(YYINITIAL);
+                 return new Token(TokenType.EOF, "", null,
+                     commentStartLine, commentStartColumn);
+               }
 
 /* 6. Catch-all, MUST be last */
 [^]            { lexError("illegal character '" + yytext() + "'"); }
