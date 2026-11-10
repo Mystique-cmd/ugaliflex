@@ -1,0 +1,19 @@
+PREPARE
+INGREDIENTS
+SEMICOLON
+BOIL
+NUMBER(4)
+CUPS
+WATER
+SEMICOLON
+ADD
+Lexical error at line 3, column 5: illegal character '@'
+NUMBER(2)
+CUPS
+FLOUR
+SEMICOLON
+COOK
+NUMBER(5)
+Lexical error at line 4, column 7: illegal character '#'
+MINUTES
+SEMICOLON
